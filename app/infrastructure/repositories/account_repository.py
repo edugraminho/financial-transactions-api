@@ -89,11 +89,19 @@ class AccountRepository(IAccountRepository):
     def _to_domain_entity(self, db_account: AccountModel) -> Account:
         """Convert SQLAlchemy model to domain entity"""
 
+        created_at = db_account.created_at
+        if created_at.tzinfo is None:
+            created_at = created_at.replace(tzinfo=timezone.utc)
+
+        updated_at = db_account.updated_at
+        if updated_at.tzinfo is None:
+            updated_at = updated_at.replace(tzinfo=timezone.utc)
+
         return Account(
             id=db_account.id,
             account_number=db_account.account_number,
             account_name=db_account.account_name,
             status=db_account.status,
-            created_at=db_account.created_at,
-            updated_at=db_account.updated_at,
+            created_at=created_at,
+            updated_at=updated_at,
         )

@@ -1,5 +1,5 @@
 from typing import List, Optional
-from datetime import date
+from datetime import date, timezone
 from decimal import Decimal
 from sqlalchemy.orm import Session
 from sqlalchemy import func, case
@@ -127,6 +127,10 @@ class TransactionRepository(ITransactionRepository):
     def _to_domain_entity(self, db_transaction: TransactionModel) -> Transaction:
         """Convert SQLAlchemy model to domain entity."""
 
+        created_at = db_transaction.created_at
+        if created_at.tzinfo is None:
+            created_at = created_at.replace(tzinfo=timezone.utc)
+
         return Transaction(
             id=db_transaction.id,
             account_id=db_transaction.account_id,
@@ -134,6 +138,6 @@ class TransactionRepository(ITransactionRepository):
             transaction_type=db_transaction.transaction_type,
             description=db_transaction.description,
             transaction_date=db_transaction.transaction_date,
-            created_at=db_transaction.created_at,
+            created_at=created_at,
             reference_id=db_transaction.reference_id,
         )

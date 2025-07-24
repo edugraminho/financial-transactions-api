@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from app.core.enums import AccountStatus
 
 
@@ -14,27 +14,30 @@ class AccountCreate(BaseModel):
         ..., min_length=1, max_length=255, description="Account display name"
     )
 
-    @validator("account_number")
+    @field_validator("account_number")
+    @classmethod
     def validate_account_number(cls, v):
         """Validate and clean account number."""
         if not v or not v.strip():
             raise ValueError("Account number cannot be empty")
         return v.strip()
 
-    @validator("account_name")
+    @field_validator("account_name")
+    @classmethod
     def validate_account_name(cls, v):
         """Validate and clean account name"""
         if not v or not v.strip():
             raise ValueError("Account name cannot be empty")
         return v.strip()
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "account_number": "ACC-001",
                 "account_name": "Main Business Account",
             }
         }
+    }
 
 
 class AccountResponse(BaseModel):
@@ -47,9 +50,9 @@ class AccountResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
-        schema_extra = {
+    model_config = {
+        "from_attributes": True,
+        "json_schema_extra": {
             "example": {
                 "id": 1,
                 "account_number": "ACC-001",
@@ -58,7 +61,8 @@ class AccountResponse(BaseModel):
                 "created_at": "2024-01-15T10:00:00Z",
                 "updated_at": "2024-01-15T10:00:00Z",
             }
-        }
+        },
+    }
 
 
 class AccountListResponse(BaseModel):
@@ -67,8 +71,8 @@ class AccountListResponse(BaseModel):
     accounts: List[AccountResponse]
     total_count: int
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "accounts": [
                     {
@@ -83,3 +87,4 @@ class AccountListResponse(BaseModel):
                 "total_count": 1,
             }
         }
+    }

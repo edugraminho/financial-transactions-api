@@ -46,13 +46,6 @@ class Transaction:
 
         return self.transaction_type == TransactionType.CREDIT
 
-    def get_signed_amount(self) -> Money:
-        """Get amount with sign based on transaction type."""
-
-        if self.is_debit():
-            return Money(-self.amount.amount, self.amount.currency)
-        return self.amount
-
     @classmethod
     def create_credit(
         cls,
@@ -118,7 +111,7 @@ class Transaction:
 
     def to_dict(self) -> dict:
         """Convert transaction to dictionary."""
-        
+
         return {
             "id": self.id,
             "account_id": self.account_id,

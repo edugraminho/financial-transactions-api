@@ -30,16 +30,6 @@ class BalanceCalculatorService:
         """Calculate current balance from all transactions"""
         return self.calculate_balance_at_date(transactions, date.today())
 
-    def calculate_balance_change(
-        self, transactions: List[Transaction], start_date: date, end_date: date
-    ) -> Money:
-        """Calculate balance change between two dates."""
-
-        start_balance = self.calculate_balance_at_date(transactions, start_date)
-        end_balance = self.calculate_balance_at_date(transactions, end_date)
-
-        return end_balance.subtract(start_balance)
-
     def has_sufficient_funds(
         self, current_balance: Money, withdrawal_amount: Money
     ) -> bool:

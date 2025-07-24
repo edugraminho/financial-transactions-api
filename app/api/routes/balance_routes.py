@@ -38,7 +38,17 @@ async def get_account_balance(
             db=db, account_id=account_id, target_date=target_date
         )
 
-        return result
+        # Transform use case result to match BalanceResponse schema
+        response_data = {
+            "account_id": result["account"]["id"],
+            "account_number": result["account"]["account_number"],
+            "account_name": result["account"]["account_name"],
+            "balance": result["balance"],
+            "date": result["target_date"],
+            "source": result["source"],
+        }
+
+        return response_data
 
     except AccountNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))

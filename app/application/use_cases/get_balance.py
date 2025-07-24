@@ -114,10 +114,12 @@ class GetBalanceUseCase:
         """Build standard response format."""
 
         return {
-            "account_id": account.id,
-            "account_number": account.account_number,
-            "account_name": account.account_name,
+            "account": {
+                "id": account.id,
+                "account_number": account.account_number,
+                "account_name": account.account_name,
+            },
             "balance": balance.to_dict(),
-            "date": target_date.isoformat(),
+            "target_date": target_date.isoformat(),
             "source": source,
         }
