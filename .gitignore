@@ -1,0 +1,10 @@
+.vscode
+__pycache__
+.pytest_cache
+
+# local env files
+.env
+.env.local
+.env.*.local
+
+drafts.txt

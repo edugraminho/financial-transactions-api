@@ -1,0 +1,710 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Financial Transactions API",
+        "description": "API for managing financial transactions in checking accounts",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/accounts/": {
+            "post": {
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Create Account",
+                "description": "Create new financial account",
+                "operationId": "create_account_api_v1_accounts__post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "List Accounts",
+                "description": "List all accounts with pagination",
+                "operationId": "list_accounts_api_v1_accounts__get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Items per page",
+                            "default": 50,
+                            "title": "Limit"
+                        },
+                        "description": "Items per page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/transactions/": {
+            "post": {
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Create Transaction",
+                "description": "Criar nova transação financeira",
+                "operationId": "create_transaction_api_v1_transactions__post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransactionCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TransactionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "List Transactions",
+                "description": "Listar transações de uma conta com paginação e filtros",
+                "operationId": "list_transactions_api_v1_transactions__get",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "description": "Account ID",
+                            "title": "Account Id"
+                        },
+                        "description": "Account ID"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Items per page",
+                            "default": 50,
+                            "title": "Limit"
+                        },
+                        "description": "Items per page"
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filter from date",
+                            "title": "Start Date"
+                        },
+                        "description": "Filter from date"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filter to date",
+                            "title": "End Date"
+                        },
+                        "description": "Filter to date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TransactionListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/accounts/{account_id}/balance": {
+            "get": {
+                "tags": [
+                    "balance"
+                ],
+                "summary": "Get Account Balance",
+                "description": "Get account balance at specific date with cache strategy.",
+                "operationId": "get_account_balance_api_v1_accounts__account_id__balance_get",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Account Id"
+                        }
+                    },
+                    {
+                        "name": "target_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Balance date (defaults to today)",
+                            "title": "Target Date"
+                        },
+                        "description": "Balance date (defaults to today)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BalanceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "summary": "Health Check",
+                "description": "Health check endpoint",
+                "operationId": "health_check_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AccountCreate": {
+                "properties": {
+                    "account_number": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "title": "Account Number",
+                        "description": "Unique account number"
+                    },
+                    "account_name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 1,
+                        "title": "Account Name",
+                        "description": "Account display name"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "account_number",
+                    "account_name"
+                ],
+                "title": "AccountCreate",
+                "description": "Schema for creating an account"
+            },
+            "AccountListResponse": {
+                "properties": {
+                    "accounts": {
+                        "items": {
+                            "$ref": "#/components/schemas/AccountResponse"
+                        },
+                        "type": "array",
+                        "title": "Accounts"
+                    },
+                    "total_count": {
+                        "type": "integer",
+                        "title": "Total Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "accounts",
+                    "total_count"
+                ],
+                "title": "AccountListResponse",
+                "description": "Schema for account list response."
+            },
+            "AccountResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "account_number": {
+                        "type": "string",
+                        "title": "Account Number"
+                    },
+                    "account_name": {
+                        "type": "string",
+                        "title": "Account Name"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/AccountStatus"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "account_number",
+                    "account_name",
+                    "status",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "AccountResponse",
+                "description": "Schema for account response."
+            },
+            "AccountStatus": {
+                "type": "string",
+                "enum": [
+                    "active",
+                    "inactive",
+                    "blocked"
+                ],
+                "title": "AccountStatus",
+                "description": "Account status for financial accounts."
+            },
+            "BalanceResponse": {
+                "properties": {
+                    "account_id": {
+                        "type": "integer",
+                        "title": "Account Id"
+                    },
+                    "account_number": {
+                        "type": "string",
+                        "title": "Account Number"
+                    },
+                    "account_name": {
+                        "type": "string",
+                        "title": "Account Name"
+                    },
+                    "balance": {
+                        "$ref": "#/components/schemas/MoneySchema"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Date"
+                    },
+                    "source": {
+                        "type": "string",
+                        "title": "Source"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "account_id",
+                    "account_number",
+                    "account_name",
+                    "balance",
+                    "date",
+                    "source"
+                ],
+                "title": "BalanceResponse",
+                "description": "Schema for balance response."
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "MoneySchema": {
+                "properties": {
+                    "amount": {
+                        "type": "string",
+                        "title": "Amount",
+                        "description": "Amount as string to preserve precision"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "maxLength": 3,
+                        "minLength": 3,
+                        "title": "Currency",
+                        "default": "BRL"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "amount"
+                ],
+                "title": "MoneySchema",
+                "description": "Schema for Money value object"
+            },
+            "TransactionCreate": {
+                "properties": {
+                    "account_id": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "title": "Account Id",
+                        "description": "Account ID"
+                    },
+                    "amount": {
+                        "type": "string",
+                        "title": "Amount",
+                        "description": "Transaction amount"
+                    },
+                    "transaction_type": {
+                        "$ref": "#/components/schemas/TransactionType",
+                        "description": "Transaction type (credit/debit)"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 500,
+                        "minLength": 1,
+                        "title": "Description",
+                        "description": "Transaction description"
+                    },
+                    "transaction_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Transaction Date",
+                        "description": "Transaction date (defaults to today)"
+                    },
+                    "reference_id": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 255
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Reference Id",
+                        "description": "External reference ID"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "account_id",
+                    "amount",
+                    "transaction_type",
+                    "description"
+                ],
+                "title": "TransactionCreate",
+                "description": "Schema for creating a transaction."
+            },
+            "TransactionListResponse": {
+                "properties": {
+                    "account_id": {
+                        "type": "integer",
+                        "title": "Account Id"
+                    },
+                    "account_number": {
+                        "type": "string",
+                        "title": "Account Number"
+                    },
+                    "transactions": {
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionResponse"
+                        },
+                        "type": "array",
+                        "title": "Transactions"
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "title": "Pagination"
+                    },
+                    "filters": {
+                        "type": "object",
+                        "title": "Filters"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "account_id",
+                    "account_number",
+                    "transactions",
+                    "pagination",
+                    "filters"
+                ],
+                "title": "TransactionListResponse",
+                "description": "Schema for transaction list response with pagination."
+            },
+            "TransactionResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "account_id": {
+                        "type": "integer",
+                        "title": "Account Id"
+                    },
+                    "amount": {
+                        "$ref": "#/components/schemas/MoneySchema"
+                    },
+                    "transaction_type": {
+                        "$ref": "#/components/schemas/TransactionType"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "transaction_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Transaction Date"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "reference_id": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Reference Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "account_id",
+                    "amount",
+                    "transaction_type",
+                    "description",
+                    "transaction_date",
+                    "created_at"
+                ],
+                "title": "TransactionResponse",
+                "description": "Schema for transaction response."
+            },
+            "TransactionType": {
+                "type": "string",
+                "enum": [
+                    "credit",
+                    "debit"
+                ],
+                "title": "TransactionType",
+                "description": "Transaction types for financial operations."
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}

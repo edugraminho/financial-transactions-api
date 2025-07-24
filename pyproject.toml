@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+
+[project]
+name = "financial-transactions-api"
+description = "API para controle de lançamentos financeiros"
+version = "1.0.0"
+requires-python = ">=3.10"
+
+# Ruff - Modern Python linter
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I"]
+ignore = ["E501"]
+
+# Pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+asyncio_mode = "auto"
