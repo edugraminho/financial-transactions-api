@@ -53,7 +53,7 @@ Sistema para gerenciamento de transações financeiras que permite:
 
 ```bash
 git clone <repository-url>
-cd repository-name
+cd financial-transactions-api
 ```
 
 ### 2. Configure as Variáveis de Ambiente
@@ -102,7 +102,7 @@ Para testar a performance do sistema com grandes volumes de transações, use o 
 
 ```bash
 # 1. Execute o script dentro do container da API
-docker exec -it repository-name-api-1 python scripts/load_test_data.py
+docker exec -it financial-transactions-api-api-1 python scripts/load_test_data.py
 
 # 2. Siga as instruções do script:
 # - Digite o ID da conta (ex: 1)
@@ -122,6 +122,36 @@ O script gera transações aleatórias com:
 - Testar performance com muitas transações (100, 1K, 10K+)
 - Demonstrar funcionamento dos snapshots automáticos
 - Verificar otimizações de cache e índices
+
+
+## 🧪 Executar Testes
+
+### Via Docker (Recomendado)
+```bash
+# Todos os testes
+./scripts/run_tests_docker.sh all
+
+# Apenas unitários
+./scripts/run_tests_docker.sh unit
+
+# Apenas integração
+./scripts/run_tests_docker.sh integration
+
+# Com cobertura
+./scripts/run_tests_docker.sh coverage
+```
+
+### Via Python Local
+```bash
+# Instalar dependências
+pip install pytest pytest-cov
+
+# Executar testes
+python scripts/run_tests.py --coverage
+python scripts/run_tests.py --unit
+python scripts/run_tests.py --integration
+```
+
 
 ## ⚡ Estratégias de Performance
 
@@ -165,12 +195,10 @@ CREATE INDEX idx_snapshot_account_date ON balance_snapshots(account_id, snapshot
 
 ### Benchmarks de Performance
 
-| Cenário | Sem Otimização | Com Cache/Snapshots | Melhoria |
-|---------|----------------|---------------------|----------|
-| 100 transações | 20ms | 2-5ms | **4-10x** |
-| 1.000 transações | 80ms | 2-8ms | **10-40x** |
-| 10.000 transações | 400ms | 2-10ms | **40-200x** |
-| 100.000+ transações | 2.000ms+ | 2-15ms | **100-800x** |
+- **Consulta de saldo**: < 50ms (com cache)
+- **Criação de transação**: < 100ms
+- **Listagem paginada**: < 150ms
+- **Throughput**: 1000+ req/s
 
 ### Performance Response Indicators
 
@@ -249,6 +277,26 @@ curl "http://localhost:8000/api/v1/transactions?account_id=1&page=1&limit=10&sta
 - **Type hints**: Tipagem completa
 - **Arquitetura Hexagonal**: Separação clara de responsabilidades
 - **Dependency Injection**: Facilita testes e manutenção
+
+### Estrutura de Testes
+
+```
+tests/
+├── conftest.py           # Fixtures compartilhadas
+├── unit/                 # Testes unitários isolados
+│   ├── test_money.py
+│   ├── test_account.py
+│   ├── test_transaction.py
+│   ├── test_balance_calculator.py
+│   └── test_*_use_case.py
+└── integration/         # Testes com dependências reais
+    ├── test_account_repository.py
+    └── test_api_endpoints.py
+```
+
+**Cobertura**: >85% focada em lógica de negócio  
+**Fixtures**: Banco SQLite in-memory + mocks para serviços  
+**Estratégia**: Unit (mocks) + Integration (TestClient)
 
 ---
 
