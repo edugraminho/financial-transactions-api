@@ -25,6 +25,20 @@ services:
     ports:
       - "6379:6379"
 
+  # Servico para execuçao de testes
+  test:
+    build: .
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: python scripts/run_tests.py --all --coverage --report
+    profiles:
+      - test
+
 volumes:
   postgres_data:
 
